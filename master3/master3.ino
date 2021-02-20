@@ -61,18 +61,16 @@ void loop() {
   print_lcd(dustDensity, refValue, lcd);
   if (dustDensity > refValue) {
     tone(buzzer, 1000); // Send 1KHz sound signal...
-    if (mySerial.available()) {
-      mySerial.println('1');
-    }
+
+    mySerial.println('1');
+
     //    delay(1000);        // ...for 1 sec
     //    noTone(buzzer);     // Stop sound...
     //    delay(1000);
   }
   else {
     noTone(buzzer);
-    if (mySerial.available()) {
-      mySerial.println('0');
-    }
+    mySerial.println('0');
   }
 
   delay(750);
