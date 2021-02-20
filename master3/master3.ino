@@ -1,5 +1,6 @@
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
+#include <SoftwareSerial.h>
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 const int buzzer = 9;
@@ -17,8 +18,14 @@ float dustDensity = 0;
 
 float refValue = 0;
 
+int TxD = 4;
+int RxD = 5;
+
+SoftwareSerial mySerial(RxD, TxD);
+
 void setup(){
   Serial.begin(9600);
+  mySerial.begin(9600);
   lcd.begin();
   pinMode(ledPower,OUTPUT);
   pinMode(buzzer, OUTPUT);
@@ -49,7 +56,7 @@ void loop(){
 //  Serial.println("Voltage:");
 //  Serial.println(calcVoltage);
 //
-  Serial.println("Dust Density:");
+//  Serial.println("Dust Density:");
   Serial.println(dustDensity);
   print_lcd(dustDensity, refValue, lcd);
   if(dustDensity > refValue){
@@ -61,7 +68,10 @@ void loop(){
   else{
     noTone(buzzer);
   }
-  delay(500);
+  if(mySerial.available()){
+    mySerial.println(dustDensity);
+  }
+  delay(750);
 }
 
 void print_lcd(float curr, float ref, LiquidCrystal_I2C lcd)
